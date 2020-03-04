@@ -7,6 +7,7 @@ biker.max_reverse = minetest.settings:get("motorbike.reverse") or 5--Top speed i
 biker.acceleration = minetest.settings:get("motorbike.acceleration") or 1.5--Acceleration
 biker.braking = minetest.settings:get("motorbike.braking") or 5--Braking power
 biker.stepheight = minetest.settings:get("motorbike.stepheight") or 1.3--Bike stephight
+biker.breakable = minetest.settings:get("motorbike.breakable") or true--If the bike is breakable (Citysim please change to false :)
 
 biker.path = minetest.get_modpath("motorbike")
 dofile(biker.path.."/functions.lua")
@@ -23,6 +24,7 @@ for id, colour in pairs (bikelist) do
 		stepheight = biker.stepheight,
 		physical = true,
 		collisionbox = {0.5, 0.5, 0.5, -0.5, -0.83, -0.5},
+		drop = "motorbike:"..colour,
 		on_activate = function(self, staticdata)
 			if staticdata then
 				if biker.signs then
@@ -55,6 +57,21 @@ for id, colour in pairs (bikelist) do
 			if self.driver then
 				biker.detach(clicker, {x=0.5, y=0, z=0.5})
 				return
+			end
+		end,
+		on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)
+			if biker.breakable then
+				if puncher:is_player() and not self.driver then
+					local pos = self.object:get_pos()
+					local new_pos = {x=pos.x, y=pos.y+1, z=pos.z}
+					local item = minetest.add_item(pos, ItemStack(self.drop))
+					if item then
+						self.object:remove()
+						if self.plate then
+							self.plate:remove()
+						end
+					end
+				end
 			end
 		end,
 		on_step = function(self, dtime)
@@ -100,14 +117,14 @@ minetest.register_craft({
 })
 if biker.signs then
 	minetest.register_entity("motorbike:licenseplate", {
-	    collisionbox = { 0, 0, 0, 0, 0, 0 },
-	    visual = "upright_sprite",
-	    textures = {"blank.png"},
+		collisionbox = { 0, 0, 0, 0, 0, 0 },
+		visual = "upright_sprite",
+		textures = {"blank.png"},
 		visual_size = {x=0.7, y=0.7, z=0.7},
 		physical = false,
 		pointable = false,
 		collide_with_objects = false,
-	    on_activate = function(self)
+		on_activate = function(self)
 			minetest.after(0.2, function()
 				if not self.object:get_attach() then
 					self.object:remove()
@@ -118,6 +135,6 @@ if biker.signs then
 					self.object:set_properties({textures={generate_texture(create_lines(text))}})
 				end
 			end)
-	    end
+		end
 	})
 end

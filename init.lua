@@ -89,9 +89,14 @@ for id, colour in pairs (bikelist) do
 		description = colour:gsub("^%l", string.upper):gsub("_", " ").." bike",
 		inventory_image = "motorbike_"..colour.."_inv.png",
 		on_place = function(itemstack, placer, pointed_thing)
+			if pointed_thing.type ~= "node then
+				return
+			end
 			local pos = {x=pointed_thing.above.x, y=pointed_thing.above.y+1, z=pointed_thing.above.z}
 			local bike = minetest.add_entity(pos, "motorbike:bike_"..colour, biker.get_plate(placer:get_player_name()))
 			local ent = bike:get_luaentity()
+			itemstack:take_item()
+			return itemstack
 		end,
 	})
 	minetest.register_craft({

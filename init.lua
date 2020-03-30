@@ -9,6 +9,7 @@ biker.braking = minetest.settings:get("motorbike.braking") or 5--Braking power
 biker.stepheight = minetest.settings:get("motorbike.stepheight") or 1.3--Bike stephight
 biker.breakable = minetest.settings:get("motorbike.breakable") or true--If the bike is breakable (Citysim please change to false :)
 biker.crumbly_spd = minetest.settings:get("motorbike.crumbly_spd") or 11--Same as max_speed but on nodes like dirt, sand, gravel ect
+biker.kick = minetest.settings:get("motorbike.kick") or true--Ability to punch the motorbike to kick the rider off of the bike
 
 biker.path = minetest.get_modpath("motorbike")
 dofile(biker.path.."/functions.lua")
@@ -71,6 +72,13 @@ for id, colour in pairs (bikelist) do
 						if self.plate then
 							self.plate:remove()
 						end
+					end
+				end
+			end
+			if biker.kick then
+				if self.driver and puncher:get_player_name() ~= self.driver:get_player_name() then
+					if (puncher:get_wielded_item():get_name() == "") and (time_from_last_punch >= tool_capabilities.full_punch_interval) and math.random(1,2) == 1 then
+						biker.detach(self.driver)
 					end
 				end
 			end

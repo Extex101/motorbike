@@ -32,7 +32,7 @@ local function def_plate() return randomString(3).."-"..randomNumber(3) end
 function biker.get_plate(name)
 	local custom_plates = {
 		Jely = {"Jely-"..randomNumber(2), def_plate()},
-		Elkien = {"Elk-"..randomNumber(3), def_plate()},
+		Elkien = {"Elk-"..randomNumber(3), def_plate(), "Sparks-"..randomNumber(3)},
 		Bob12 = {"Bob-"..randomNumber(3), "Boi-"..randomNumber(3), "MB-"..randomNumber(4), "N1nja-"..randomNumber(3), def_plate()},
 		Extex = {"Ex-"..randomNumber(4), "Bullet-"..randomNumber(2), def_plate(), "3xt3x-"..randomNumber(2)},
 		Merlok = {"Mer-"..randomNumber(3), "Nipe-"..randomNumber(2), "M3RL0k-"..randomNumber(2), "N1P3-"..randomNumber(2), def_plate(), "Snoopy-"..randomNumber(3)},
@@ -40,7 +40,9 @@ function biker.get_plate(name)
 		--"The-Black-Knight" = {"TBK-"..randomNumber(3), "Vike-"randomNumber(2), "Rock-"..randomNumber(2), def_plate()},
 		Queen_Vibe = {"QV-"..randomNumber(3), "Vibe-"..randomNumber(2), def_plate()},
 		Melkor = {"Creator", "ModelKing", "Melkor", def_plate()},
-		Hype = {"Hobo-"..randomNumber(2), "Hyper-"..randomNumber(1), def_plate()}
+		Hype = {"Hobo-"..randomNumber(2), "Hyper-"..randomNumber(1), def_plate()},
+		AidanLCB = {"LCB-"..randomNumber(3), def_plate(), "Gold-"..randomNumber(3)},
+		irondude = {"Iron-"..randomNumber(3), def_plate(), "Fox-"..randomNumber(3), "cndl-"..randomNumber(3)},
 	}
 	if custom_plates[name] then
 		return custom_plates[name][math.random(#custom_plates[name])]

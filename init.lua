@@ -8,6 +8,7 @@ biker.acceleration = minetest.settings:get("motorbike.acceleration") or 1.5--Acc
 biker.braking = minetest.settings:get("motorbike.braking") or 5--Braking power
 biker.stepheight = minetest.settings:get("motorbike.stepheight") or 1.3--Bike stephight
 biker.breakable = minetest.settings:get("motorbike.breakable") or true--If the bike is breakable (Citysim please change to false :)
+biker.crumbly_spd = minetest.settings:get("motorbike.crumbly_spd") or 11--Same as max_speed but on nodes like dirt, sand, gravel ect
 
 biker.path = minetest.get_modpath("motorbike")
 dofile(biker.path.."/functions.lua")
@@ -95,6 +96,7 @@ for id, colour in pairs (bikelist) do
 			local pos = {x=pointed_thing.above.x, y=pointed_thing.above.y+1, z=pointed_thing.above.z}
 			local bike = minetest.add_entity(pos, "motorbike:bike_"..colour, biker.get_plate(placer:get_player_name()))
 			local ent = bike:get_luaentity()
+			bike:set_yaw(placer:get_look_horizontal())
 			itemstack:take_item()
 			return itemstack
 		end,

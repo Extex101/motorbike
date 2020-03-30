@@ -81,6 +81,9 @@ local function node_is(pos)
 	if minetest.get_item_group(node.name, "walkable") ~= 0 then
 		return "walkable"
 	end
+	if minetest.get_item_group(node.name, "crumbly") ~= 0 then
+		return "crumbly"
+	end
 	return "other"
 end
 local function shortAngleDist(a0,a1)
@@ -353,11 +356,20 @@ function biker.drive(entity, dtime)
 	-- enforce speed limit forward and reverse
 	local p = entity.object:getpos()
 	local ni = node_is(p)
+	local uni = node_is(vector.add(p, {x=0, y=-1, z=0}))
+	--minetest.chat_send_all(node_is)
 	local max_spd = biker.max_reverse
 	if get_sign(entity.v) >= 0 and ni ~= "liquid" then
-		max_spd = biker.max_speed
+		if uni == "crumbly" and uni ~= "other" then
+			max_spd = biker.crumbly_spd
+		else
+			max_spd = biker.max_speed
+		end
 	elseif ni == "liquid" then
 		max_spd = 2
+	end
+	if uni == "crumbly" and uni ~= "other" then
+		max_spd = biker.crumbly_spd
 	end
 	if math.abs(entity.v) > max_spd then
 		entity.v = entity.v - get_sign(entity.v)

@@ -307,12 +307,12 @@ function biker.drive(entity, dtime)
 		end
 		local l = rots.z
 		
-		if ctrl.jump and entity.v > (biker.max_speed)-5 then
+		if ctrl.jump and entity.v > (biker.max_speed)/3 then
 			entity.driver:set_eye_offset({x=0, y=-6.0, z=0}, {x=0, y=0, z=0})
 			entity.wheelie = repair(angleLerp(k, 45, 0.1))
 			l = angleLerp(l, 0, 0.07)
 			entity.object:set_rotation({x=repair(entity.wheelie),y=repair(j),z=repair(l,3)})
-		elseif not ctrl.jump or entity.v < (biker.max_speed)-5 then
+		elseif not ctrl.jump or entity.v < (biker.max_speed)/3 then
 			
 			entity.driver:set_eye_offset({x=0, y=-7, z=0}, {x=0, y=0, z=0})
 			if entity.v > 1.2 and entity.wheelie == 0 then

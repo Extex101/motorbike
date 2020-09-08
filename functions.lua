@@ -163,7 +163,6 @@ end
 function biker.wheelspeed(bike)
 	--if true then return end
 	if not bike then return end
-	if not bike.wheels then return end
 	if not bike.object then return end
 	if not bike.object:getvelocity() then return end
 	local direction = 1
@@ -325,12 +324,6 @@ function biker.drive(entity, dtime)
 			entity.wheelie = repair(angleLerp(k, 0 ,0.1))
 			entity.object:set_rotation({x=entity.wheelie, y=newrot, z=repair(l,3)})
 		end
-		if math.abs(entity.v) < .05 and math.abs(entity.v) > 0 then
-			biker.wheelspeed(entity)
-		end
-		if entity.lastv and vector.length(entity.lastv) == 0 and math.abs(entity.v) > 0 then
-			biker.wheelspeed(entity)
-		end
 		if not ctrl.sneak then
 			local s = get_sign(entity.v)
 			entity.v = entity.v - 0.04 * s
@@ -390,7 +383,65 @@ function biker.drive(entity, dtime)
 
 	entity.object:setvelocity(new_velo)
 	entity.object:setacceleration(new_acce)
+	
+		if entity.lastv and vector.length(entity.lastv) > 0 and math.abs(entity.v) == 0 then
+			biker.wheelspeed(entity)
+			if entity.wheelsound then
+				minetest.sound_fade(entity.wheelsound, 30, 0)
+			end
+			if entity.windsound then
+				minetest.sound_fade(entity.windsound, 30, 0)
+			end
+		end
+		if entity.lastv and vector.length(entity.lastv) == 0 and math.abs(entity.v) > 0 then
+			biker.wheelspeed(entity)
+		end
+		
 	entity.lastv = entity.object:getvelocity()
+	
+	--sound
+	if entity.v > 0 and entity.driver ~= nil then
+		entity.timer1 = entity.timer1 + dtime
+		if entity.timer1 > .1 then
+				local rpm = 1
+				if entity.v > 7 then
+					rpm = entity.v/7+.4
+				elseif entity.v > 3 then
+					rpm = entity.v/3+.3
+				else
+					rpm = entity.v/3+.2
+				end
+				minetest.sound_play("motoengine", {
+					max_hear_distance = 48,
+					pitch = rpm+.1,
+					object = entity.object
+				})
+		entity.timer1 = 0
+		end
+	end
+	entity.timer2 = entity.timer2 + dtime
+	local abs_v = math.abs(entity.v)
+	if entity.timer2 > 1.5-abs_v/max_spd*1.1 then
+		if abs_v > .2 then
+			if math.abs(velo.y) < .1 then 
+				entity.wheelsound = minetest.sound_play("tyresound", {
+					max_hear_distance = 48,
+					object = entity.object,
+					pitch = 1.1 + (abs_v/max_spd)*.6,
+					gain = .5 + (abs_v/max_spd)*2
+				})
+			elseif entity.windsound then
+				minetest.sound_fade(entity.windsound, 30, 0)
+			end
+			entity.windsound = minetest.sound_play("wind", {
+				max_hear_distance = 10,
+				object = entity.object,
+				pitch = 1 + (abs_v/max_spd)*.6,
+				gain = 0 + (abs_v/max_spd)*4
+			})
+		end
+		entity.timer2 = 0
+	end
 end
 
 minetest.register_on_leaveplayer(function(player)

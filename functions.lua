@@ -278,6 +278,11 @@ function biker.drive(entity, dtime)
 				entity.v = entity.v - biker.acceleration/10
 			elseif get_sign(entity.v) > 0 and entity.v > (biker.max_speed/10)-1 then
 				entity.v = entity.v - biker.braking/10
+				minetest.sound_play("motorbike_screech", {
+					max_hear_distance = 48,
+					gain = 0.5,
+					object = entity.object,
+				})
 				local num = 1
 				local pos = entity.object:getpos()
 				local d = 0.2

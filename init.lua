@@ -33,6 +33,8 @@ for id, colour in pairs (bikelist) do
 					self.platenumber = staticdata
 				end
 			end
+			if not self.timer1 then self.timer1 = 0 end
+			if not self.timer2 then self.timer2 = 0 end
 			local pos = self.object:get_pos()
 			self.object:set_armor_groups({fleshy=0, immortal=1})
 			if biker.signs then

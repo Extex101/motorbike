@@ -1,6 +1,6 @@
 biker = {}
 biker.signs = minetest.get_modpath("signs")
-if not minetest.global_exists("generate_texture") or not minetest.global_exists("create_line") then
+if not minetest.global_exists("generate_texture") then
 	biker.signs = false
 end
 biker.turn_power = minetest.settings:get("motorbike.turn_power") or 0.07--Turning speed of bike 1 is instant. 0.07 is suggested

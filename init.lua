@@ -1,5 +1,8 @@
 biker = {}
-biker.signs = minetest.get_modpath("signs") and minetest.global_exists("generate_texture") and minetest.global_exists("create_line")
+biker.signs = minetest.get_modpath("signs")
+if not minetest.global_exists("generate_texture") or not minetest.global_exists("create_line") then
+	biker.signs = false
+end
 biker.turn_power = minetest.settings:get("motorbike.turn_power") or 0.07--Turning speed of bike 1 is instant. 0.07 is suggested
 biker.max_speed = minetest.settings:get("motorbike.max_speed") or 17--Top speed the bike can go.
 biker.max_reverse = minetest.settings:get("motorbike.reverse") or 5--Top speed in reverse

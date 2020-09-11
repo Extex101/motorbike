@@ -44,7 +44,7 @@ function biker.get_plate(name)
 		AidanLCB = {"LCB-"..randomNumber(3), def_plate(), "Gold-"..randomNumber(3)},
 		irondude = {"Iron-"..randomNumber(3), def_plate(), "Fox-"..randomNumber(3), "cndl-"..randomNumber(3)},
 	}
-	if custom_plates[name] then
+	if biker.custom_plates and custom_plates[name] then
 		return custom_plates[name][math.random(#custom_plates[name])]
 	end
 	return def_plate()

@@ -12,6 +12,7 @@ biker.stepheight = minetest.settings:get("motorbike.stepheight") or 1.3--Bike st
 biker.breakable = minetest.settings:get("motorbike.breakable") or true--If the bike is breakable (Citysim please change to false :)
 biker.crumbly_spd = minetest.settings:get("motorbike.crumbly_spd") or 11--Same as max_speed but on nodes like dirt, sand, gravel ect
 biker.kick = minetest.settings:get("motorbike.kick") or true--Ability to punch the motorbike to kick the rider off of the bike
+biker.custom_plates = minetest.settings:get("motorbike.custom_plates") or true --Turns on custom plates
 
 biker.path = minetest.get_modpath("motorbike")
 dofile(biker.path.."/functions.lua")

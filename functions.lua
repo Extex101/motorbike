@@ -224,9 +224,10 @@ function biker.drive(entity, dtime)
 	timer = timer + dtime
 
 	local rot_steer, rot_view = math.pi/2, 0
+	
+	entity.timer2 = entity.timer2 or 0
 
 	local acce_y = 2
-
 	local velo = entity.object:getvelocity()
 	entity.v = get_v(velo) * get_sign(entity.v)
 	-- process controls

@@ -1,8 +1,6 @@
 biker = {}
+biker.riders = {}
 biker.signs = minetest.get_modpath("signs")
-if not minetest.global_exists("generate_texture") then
-	biker.signs = false
-end
 biker.turn_power = minetest.settings:get("motorbike.turn_power") or 0.07--Turning speed of bike 1 is instant. 0.07 is suggested
 biker.max_speed = minetest.settings:get("motorbike.max_speed") or 17--Top speed the bike can go.
 biker.max_reverse = minetest.settings:get("motorbike.reverse") or 5--Top speed in reverse
@@ -10,9 +8,9 @@ biker.acceleration = minetest.settings:get("motorbike.acceleration") or 1.5--Acc
 biker.braking = minetest.settings:get("motorbike.braking") or 5--Braking power
 biker.stepheight = minetest.settings:get("motorbike.stepheight") or 1.3--Bike stephight
 biker.breakable = minetest.settings:get("motorbike.breakable") or true--If the bike is breakable (Citysim please change to false :)
-biker.crumbly_spd = minetest.settings:get("motorbike.crumbly_spd") or 11--Same as max_speed but on nodes like dirt, sand, gravel ect
+biker.crumbly_spd = minetest.settings:get("motorbike.crumbly_spd") or 17--Same as max_speed but on nodes like dirt, sand, gravel ect
 biker.kick = minetest.settings:get("motorbike.kick") or true--Ability to punch the motorbike to kick the rider off of the bike
-biker.custom_plates = minetest.settings:get("motorbike.custom_plates") or true --Turns on custom plates
+biker.custom_plates = minetest.settings:get("motorbike.custom_plates") or false --When plates are on enable custom plates
 
 biker.path = minetest.get_modpath("motorbike")
 dofile(biker.path.."/functions.lua")
@@ -36,8 +34,6 @@ for id, colour in pairs (bikelist) do
 					self.platenumber = staticdata
 				end
 			end
-			if not self.timer1 then self.timer1 = 0 end
-			if not self.timer2 then self.timer2 = 0 end
 			local pos = self.object:get_pos()
 			self.object:set_armor_groups({fleshy=0, immortal=1})
 			if biker.signs then
@@ -59,6 +55,11 @@ for id, colour in pairs (bikelist) do
 			local name = clicker:get_player_name()
 			if not self.driver then
 				biker.attach(self, clicker, false)
+				minetest.sound_play("motorbike_start", {
+					max_hear_distance = 24,
+					gain = 1,
+					object = self.object,
+				})
 				return
 			end
 			if self.driver then
@@ -108,7 +109,6 @@ for id, colour in pairs (bikelist) do
 			end
 			local pos = {x=pointed_thing.above.x, y=pointed_thing.above.y+1, z=pointed_thing.above.z}
 			local bike = minetest.add_entity(pos, "motorbike:bike_"..colour, biker.get_plate(placer:get_player_name()))
-			local ent = bike:get_luaentity()
 			bike:set_yaw(placer:get_look_horizontal())
 			itemstack:take_item()
 			return itemstack

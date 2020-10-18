@@ -225,8 +225,8 @@ function biker.drive(entity, dtime)
 
 	local rot_steer, rot_view = math.pi/2, 0
 	
-	if not self.timer1 then self.timer1 = 0 end
-	if not self.timer2 then self.timer2 = 0 end
+	if not entity.timer1 then entity.timer1 = 0 end
+	if not entity.timer2 then entity.timer2 = 0 end
 
 	local acce_y = 2
 	local velo = entity.object:getvelocity()

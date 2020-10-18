@@ -14,8 +14,8 @@ local settings = {
 	custom_plates = true
 }
 for setting, default in pairs(settings) do
-	local value = minetest.settings:get("motorbike." .. variable)
-	if value == nil then value = default end
+	local value = minetest.settings:get("motorbike." .. setting)
+	if value == nil then value = default else assert(type(value) == type(default)) end
 	biker[setting] = value
 end
 biker.path = minetest.get_modpath"motorbike"

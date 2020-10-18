@@ -115,8 +115,6 @@ local function shortAngleDist(a0, a1)
 	return 2 * da % max - da
 end
 
-local function lerp(a, b, t) return a + (a - b) * t end
-
 local function angleLerp(a0, a1, t)
 	local result = repair(a0 + shortAngleDist(a0, a1) * t)
 	if math.floor(result) == a1 then return a1 end
@@ -124,6 +122,9 @@ local function angleLerp(a0, a1, t)
 end
 
 local function get_sign(number)
+	if not number then
+		return 0
+	end
 	if number > 0 then
 		return 1
 	elseif number < 0 then

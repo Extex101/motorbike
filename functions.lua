@@ -63,7 +63,7 @@ function biker.get_plate(name)
 			"cndl-" .. random_digits(3)
 		}
 	}
-	if biker.custom_plates and custom_plates[name] then
+	if custom_plates[name] and biker.custom_plates then
 		return custom_plates[name][math.random(#custom_plates[name])]
 	end
 	return license_plate()
@@ -154,17 +154,16 @@ function biker.dist(v1, v2)
 	-- if v1 - v2 > -math.rad(45) and v1 - v2 < math.rad(45) then return v1 - v2 end
 	return biker.clamp(-shortAngleDist(v1, v2), math.rad(-55), math.rad(55))
 end
-
-local function force_detach(player)
+local function force_detach(player, leave)
 	local attached_to = player:get_attach()
 	if not player:is_player() then return end
 	if attached_to then
 		local entity = attached_to:get_luaentity()
-		if entity.driver and entity.driver == player then entity.driver = nil end
-		local name = player:get_player_name()
+		assert(entity.driver == player)
+		entity.driver = nil
 		player:set_detach()
 		player:set_eye_offset({ x = 0, y = 0, z = 0 }, { x = 0, y = 0, z = 0 })
-		if entity.info then player_api.set_model(player, entity.info.model) end
+		if entity.info and not leave then player_api.set_model(player, entity.info.model) end
 	end
 end
 
@@ -225,6 +224,7 @@ function biker.drive(entity, dtime)
 	entity.v = get_speed(velo) * get_sign(entity.v)
 	-- process controls
 	if entity.driver then
+		if not entity.driver:is_player() then return end
 		if entity.v then
 			local newv = entity.object:getvelocity()
 			if not entity.crash then entity.crash = false end
@@ -240,11 +240,12 @@ function biker.drive(entity, dtime)
 		end
 		if not entity.wheelie then entity.wheelie = 0 end
 		if not entity.lastv then entity.lastv = { x = 0, y = 0, z = 0 } end
+		local driverlook = entity.driver:get_look_yaw()
 		local rots = entity.object:get_rotation()
 		local j = rots.y
 		local k = rots.x
 		local newrot = j
-		local rrot = entity.driver:get_look_yaw() - rot_steer
+		local rrot = driverlook - rot_steer
 		local ctrl = entity.driver:get_player_control()
 		if ctrl.up and not ctrl.sneak then
 			if get_sign(entity.v) >= 0 then entity.v = entity.v + biker.acceleration / 10
@@ -269,7 +270,7 @@ function biker.drive(entity, dtime)
 						velocity = { x = math.random(-num, num), y = math.random(0, num), z = math.random(-num, num) },
 						acceleration = { x = math.random(-num, num), y = math.random(0, num), z = math.random(-num, num) },
 						expirationtime = time,
-						glow = 20,
+						--glow = 20,
 						size = math.random(10, 20),
 						collisiondetection = false,
 						vertical = false,
@@ -382,5 +383,5 @@ function biker.drive(entity, dtime)
 	end
 end
 
-minetest.register_on_leaveplayer(function(player) biker.detach(player) end)
-minetest.register_on_dieplayer(function(player) biker.detach(player) end)
+minetest.register_on_leaveplayer(function(player) force_detach(player, true) end)
+minetest.register_on_dieplayer(biker.detach)

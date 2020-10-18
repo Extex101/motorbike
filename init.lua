@@ -2,15 +2,23 @@ biker = {}
 biker.signs = minetest.get_modpath"signs"
 if not minetest.global_exists"generate_texture" then biker.signs = false end
 local settings = {
+	-- Turning speed of bike, 1 is instant
 	turn_power = 0.07,
+	-- Top speed the bike can go
 	max_speed = 17,
+	-- Top speed in reverse
 	max_reverse = 5,
 	acceleration = 1.5,
+	-- Braking power
 	braking = 5,
 	stepheight = 1.3,
+	-- Whether the bike is breakable
 	breakable = true,
+	-- Same as max_speed but on nodes like dirt, sand, gravel ect
 	crumbly_spd = 11,
+	-- Ability to punch the motorbike to kick the rider
 	kick = true,
+	-- Enable custom plates, requires "signs" mod
 	custom_plates = true
 }
 for setting, default in pairs(settings) do
@@ -70,6 +78,11 @@ for _, colour in pairs(bikelist) do
 		on_rightclick = function(self, clicker)
 			if not self.driver then
 				biker.attach(self, clicker, false)
+				minetest.sound_play("motorbike_start", {
+					max_hear_distance = 24,
+					gain = 1,
+					object = self.object,
+				})
 				return
 			end
 			if self.driver and self.driver:get_player_name() == clicker:get_player_name() then

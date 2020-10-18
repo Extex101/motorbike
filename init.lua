@@ -68,7 +68,7 @@ for id, colour in pairs (bikelist) do
 			end
 		end,
 		on_punch = function(self, puncher, time_from_last_punch, tool_capabilities, dir)
-			if biker.breakable then
+			if biker.breakable == true then
 				if puncher:is_player() and not self.driver then
 					local pos = self.object:get_pos()
 					local new_pos = {x=pos.x, y=pos.y+1, z=pos.z}

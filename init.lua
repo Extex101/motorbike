@@ -65,6 +65,7 @@ for _, colour in pairs(bikelist) do
 		on_activate = function(self, staticdata)
 			if staticdata and biker.signs then
 				self.platenumber = staticdata
+				local pos = self.object:get_pos()
 				self.plate = minetest.add_entity(pos, "motorbike:licenseplate")
 				if self.plate then
 					self.plate:set_attach(self.object, "", { x = -0.2, y = -1.9, z = -12.12 }, { x = 0, y = 0, z = 0 })

@@ -3,7 +3,6 @@ local function random_string(length, charcode_start, charcode_end)
 	if length <= 0 then return text end
 	for _ = 1, length do
 		text = text .. string.char(math.random(charcode_start, charcode_end))
-		i = i + 1
 	end
 	return text
 end

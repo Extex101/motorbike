@@ -19,7 +19,9 @@ local settings = {
 	-- Ability to punch the motorbike to kick the rider
 	kick = true,
 	-- Enable custom plates, requires "signs" mod
-	custom_plates = true
+	custom_plates = true,
+	-- Bike is be placed directly in inventory when punched
+	punch_inv = true,
 }
 for setting, default in pairs(settings) do
 	local value = minetest.settings:get("motorbike." .. setting)
@@ -96,9 +98,21 @@ for _, colour in pairs(bikelist) do
 			end
 			if not self.driver then
 				if biker.breakable then
-					local pos = self.object:get_pos()
-					local item = minetest.add_item(pos, self.drop)
-					if item then
+					if not settings.punch_inv then
+						local pos = self.object:get_pos()
+						local item = minetest.add_item(pos, self.drop)
+						if item then
+							self.object:remove()
+							if self.plate then self.plate:remove() end
+						end
+					else
+						local stack = ItemStack(self.drop)
+						local pinv = puncher:get_inventory()
+						if not pinv:room_for_item("main", stack) then
+							core.chat_send_player(puncher:get_player_name(), "You do not have room in your inventory")
+							return
+						end
+						pinv:add_item("main", stack)
 						self.object:remove()
 						if self.plate then self.plate:remove() end
 					end

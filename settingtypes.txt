@@ -30,4 +30,4 @@ motorbike.kick (Punch kicks rider) bool true
 motorbike.custom_plates (Custom plates) bool true
 
 # If enabled, bike is placed in inventory when punched.
-motorbike.punch_inv (Punch places in inventory) bool false
+motorbike.punch_inv (Punch places in inventory) bool true

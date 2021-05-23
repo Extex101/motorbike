@@ -21,7 +21,7 @@ local settings = {
 	-- Enable custom plates, requires "signs" mod
 	custom_plates = true,
 	-- Bike is be placed directly in inventory when punched
-	punch_inv = false,
+	punch_inv = true,
 }
 for setting, default in pairs(settings) do
 	local value = minetest.settings:get("motorbike." .. setting)

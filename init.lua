@@ -98,7 +98,7 @@ for _, colour in pairs(bikelist) do
 			end
 			if not self.driver then
 				if biker.breakable then
-					if not settings.punch_inv then
+					if not biker.punch_inv then
 						local pos = self.object:get_pos()
 						local item = minetest.add_item(pos, self.drop)
 						if item then

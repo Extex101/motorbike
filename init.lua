@@ -24,8 +24,16 @@ local settings = {
 	punch_inv = true,
 }
 for setting, default in pairs(settings) do
-	local value = minetest.settings:get("motorbike." .. setting)
-	if value == nil then value = default else assert(type(value) == type(default)) end
+	local settype = type(default)
+	local value
+	if settype == "boolean" then
+		value = minetest.settings:get_bool("motorbike." .. setting, default)
+	elseif settype == "number" then
+		value = tonumber(minetest.settings:get("motorbike." .. setting)) or default
+	else
+		value = minetest.setting:get("motorbike." .. setting)
+	end
+	assert(type(value) == settype)
 	biker[setting] = value
 end
 biker.path = minetest.get_modpath"motorbike"
@@ -98,7 +106,7 @@ for _, colour in pairs(bikelist) do
 			end
 			if not self.driver then
 				if biker.breakable then
-					if not settings.punch_inv then
+					if not biker.punch_inv then
 						local pos = self.object:get_pos()
 						local item = minetest.add_item(pos, self.drop)
 						if item then

@@ -31,3 +31,6 @@ motorbike.custom_plates (Custom plates) bool true
 
 # If enabled, bike is placed in inventory when punched.
 motorbike.punch_inv (Punch places in inventory) bool true
+
+# Mounted entities can only be used by owners.
+mount_ownable (Ownable mounts) bool false

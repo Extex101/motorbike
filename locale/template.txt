@@ -1,0 +1,4 @@
+# textdomain: motorbike
+You do not have room in your inventory=
+Motorbike=
+Motorbike Wheel=

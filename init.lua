@@ -1,3 +1,5 @@
+local S = minetest.get_translator(minetest.get_current_modname())
+
 biker = {}
 biker.signs = minetest.get_modpath"signs"
 if not minetest.global_exists"generate_texture" then biker.signs = false end
@@ -117,7 +119,7 @@ for _, colour in pairs(bikelist) do
 						local stack = ItemStack(self.drop)
 						local pinv = puncher:get_inventory()
 						if not pinv:room_for_item("main", stack) then
-							core.chat_send_player(puncher:get_player_name(), "You do not have room in your inventory")
+							core.chat_send_player(puncher:get_player_name(), S("You do not have room in your inventory"))
 							return
 						end
 						pinv:add_item("main", stack)
@@ -135,7 +137,7 @@ for _, colour in pairs(bikelist) do
 		get_staticdata = function(self) if biker.signs then return self.platenumber end end
 	})
 	minetest.register_craftitem("motorbike:" .. colour, {
-		description = colour:gsub("^%l", string.upper):gsub("_", " ") .. " bike",
+		description = colour:gsub("^%l", string.upper):gsub("_", " ") .. " " .. S("Motorbike"),
 		inventory_image = "motorbike_" .. colour .. "_inv.png",
 		on_place = function(itemstack, placer, pointed_thing)
 			if pointed_thing.type ~= "node" then return end
@@ -155,7 +157,11 @@ for _, colour in pairs(bikelist) do
 		}
 	}
 end
-minetest.register_craftitem("motorbike:wheel", { description = "Motorbike Wheel", inventory_image = "motorbike_wheel_inv.png" })
+minetest.register_craftitem("motorbike:wheel", {
+	description = S("Motorbike Wheel"),
+	inventory_image = "motorbike_wheel_inv.png"
+})
+
 minetest.register_craft{
 	output = "motorbike:wheel",
 	recipe = {

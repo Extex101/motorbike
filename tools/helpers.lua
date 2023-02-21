@@ -67,7 +67,7 @@ function tools.get_plate(name)
 	if custom_plates[name] and biker.custom_plates then
 		return custom_plates[name][math.random(#custom_plates[name])]
 	end
-	return license_plate()
+	return tools.license_plate()
 end
 
 function tools.node_is(pos)

@@ -73,14 +73,16 @@ end
 function tools.node_is(pos)
 	local nodename = minetest.get_node(pos).name
 	local def = minetest.registered_nodes[nodename]
-	if not def.walkable then
-		if minetest.get_item_group(nodename, "liquid") ~= 0 then
-			return "liquid"
+	if def then
+		if not def.walkable then
+			if minetest.get_item_group(nodename, "liquid") ~= 0 then
+				return "liquid"
+			end
+			return "air"
 		end
-		return "air"
-	end
-	if minetest.get_item_group(nodename, "crumbly") ~= 0 then
-		return "crumbly"
+		if minetest.get_item_group(nodename, "crumbly") ~= 0 then
+			return "crumbly"
+		end
 	end
 
 	return "other"
@@ -108,11 +110,11 @@ function tools.angleLerp(a0, a1, t)
 end
 
 function tools.get_sign(x)
-  return x>0 and 1 or x<0 and -1 or 0
+	return x>0 and 1 or x<0 and -1 or 0
 end
 
 function tools.get_speed(velocity)
-  return math.sqrt(velocity.x ^ 2 + velocity.z ^ 2)
+	return math.sqrt(velocity.x ^ 2 + velocity.z ^ 2)
 end
 
 function tools.turn_check(lerp, dest, range)

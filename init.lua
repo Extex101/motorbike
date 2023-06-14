@@ -337,7 +337,7 @@ local bikeColors = {
 
 for index, col in ipairs(bikeColors) do
     local newDef = tools.deepcopy(def)
-    newDef.initial_properties.textures = {"motorbike_"..col..".png"}
+    newDef.initial_properties.textures = {"motorbike_"..col..".png", "motorbike_"..col..".png", "motorbike_"..col..".png"}
     newDef.drop = "motorbike:"..col
     minetest.register_entity("motorbike:"..col, newDef)
 

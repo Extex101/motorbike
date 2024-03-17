@@ -119,7 +119,7 @@ end
 function def.wheelspeed (self)
     local fps = self.vel * 4
     self.object:set_animation({ x = 1, y = 19 }, fps, 0, true)
-    if v ~= 0 then
+    if fps ~= 0 then
         local i = 16
         while true do
             if i / fps > 1 then i = i / 2

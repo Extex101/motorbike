@@ -254,7 +254,7 @@ function def.play_sounds(self, dtime)
 		self.timer = self.timer + dtime
 		if self.timer > 0.1 then
             local s = biker.max_speed / 2
-			local rpm = self.vel/s
+			local rpm = math.abs(self.vel/s)
 
 			minetest.sound_play("motoengine", {
                 max_hear_distance = 48,

@@ -52,6 +52,9 @@ end
 
 function def.on_rightclick (self, clicker)
     if not self.driver then
+        if clicker:get_attach() then
+            return
+        end
         biker.attach(self, clicker, false)
         minetest.sound_play("motorbike_start", {
             max_hear_distance = 24,
@@ -281,6 +284,20 @@ function def.on_step (self, dtime)
     end
     -- process controls
     if self.driver and self.driver:is_player() then
+
+        --Check if driver dismounted by unexpected means
+        local foundDriver = false
+        for _, child in ipairs(self.object:get_children()) do
+            if self.driver and child:is_player() and child:get_player_name() == self.driver:get_player_name() then
+                foundDriver = true
+            end
+        end
+
+        --If driver is no longer attached then remove it from bike memory
+        if not foundDriver then
+            self.driver = nil
+            return
+        end
         if not under ~= "liquid" then--Disable controls while sinking in water
             self:controls(self)
         end

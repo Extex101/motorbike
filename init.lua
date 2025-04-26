@@ -46,7 +46,7 @@ function def.on_activate (self, staticdata)
     self.wheelie = 0
     self.angle = self.object:get_rotation()
     self.object:set_armor_groups{ immortal = 1 }
-
+	self.object:set_animation({ x = 1, y = 19 }, 0, 0, true)
     self:wheelspeed(self)
 end
 
@@ -121,15 +121,7 @@ end
 
 function def.wheelspeed (self)
     local fps = self.vel * 4
-    self.object:set_animation({ x = 1, y = 19 }, fps, 0, true)
-    if fps ~= 0 then
-        local i = 16
-        while true do
-            if i / fps > 1 then i = i / 2
-            else break end
-        end
-        minetest.after(i / fps, function(self) self:wheelspeed(self) end, self)
-    end
+    self.object:set_animation_frame_speed(fps)
 end
 
 function def.controls(self)

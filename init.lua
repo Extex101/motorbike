@@ -3,6 +3,9 @@ biker.path = minetest.get_modpath("motorbike")
 biker.signs = (minetest.get_modpath("signs") and minetest.global_exists("generate_texture") and minetest.global_exists("create_lines"))
 local tools = dofile(biker.path .. "/tools/init.lua")
 
+-- "owner" attribute is set when bike is placed
+local ownable = minetest.settings:get_bool("mount_ownable", false)
+
 local def = {
     initial_properties = {
         visual = "mesh",
@@ -31,12 +34,16 @@ local def = {
 }
 
 function def.on_activate (self, staticdata)
-    if staticdata and biker.signs then
-        self.platenumber = staticdata
-        local pos = self.object:get_pos()
-        self.plate = minetest.add_entity(pos, "motorbike:licenseplate")
-        if self.plate then
-            self.plate:set_attach(self.object, "", { x = -0.1, y = -2.15, z = -10.7 }, { x = 0, y = 0, z = 0 })
+    if staticdata then
+        local sdata = minetest.deserialize(staticdata)
+        self.owner = sdata.owner
+        if biker.signs then
+            self.platenumber = sdata.platenumber
+            local pos = self.object:get_pos()
+            self.plate = minetest.add_entity(pos, "motorbike:licenseplate")
+            if self.plate then
+                self.plate:set_attach(self.object, "", { x = -0.1, y = -2.15, z = -10.7 }, { x = 0, y = 0, z = 0 })
+            end
         end
     end
     self.timer = 0
@@ -53,6 +60,11 @@ end
 function def.on_rightclick (self, clicker)
     if not self.driver then
         if clicker:get_attach() then
+            return
+        end
+        local pname = clicker:get_player_name()
+        if ownable and self.owner and self.owner ~= pname then
+            minetest.chat_send_player(pname, "You cannot ride "..self.owner.."'s motorbike")
             return
         end
         biker.attach(self, clicker, false)
@@ -72,7 +84,12 @@ function def.on_punch (self, puncher, time_from_last_punch, tool_capabilities, _
     if not puncher:is_player() then
         return
     end
+    local pname = puncher:get_player_name()
     if not self.driver then
+        if ownable and self.owner and self.owner ~= pname then
+            minetest.chat_send_player(pname, "You cannot take "..self.owner.."'s motorbike")
+            return
+        end
         if biker.breakable then
             local stack = ItemStack(self.drop)
             local pinv = puncher:get_inventory()
@@ -86,14 +103,22 @@ function def.on_punch (self, puncher, time_from_last_punch, tool_capabilities, _
         end
         return
     end
-    if biker.kick and puncher:get_player_name() ~= self.driver:get_player_name() and puncher:get_wielded_item():get_name() == "" and time_from_last_punch >= tool_capabilities.full_punch_interval and math.random(1, 2) == 1 then
+    if biker.kick and pname ~= self.driver:get_player_name() and puncher:get_wielded_item():get_name() == "" and time_from_last_punch >= tool_capabilities.full_punch_interval and math.random(1, 2) == 1 then
+        if ownable and self.owner and self.owner ~= pname then
+            minetest.chat_send_player(pname, "You cannot kick "..self.owner.." from the motorbike")
+            return
+        end
         biker.detach(self.driver)
     end
 end
 
 if biker.signs then
     function def.get_staticdata (self)
-        return self.platenumber
+        local sdata = {
+            owner = self.owner,
+            platenumber = self.platenumber,
+        }
+        return minetest.serialize(sdata)
     end
 
     minetest.register_entity("motorbike:licenseplate", {
@@ -356,7 +381,9 @@ for index, col in ipairs(bikeColors) do
         on_place = function(itemstack, placer, pointed_thing)
             if pointed_thing.type ~= "node" then return end
             local pos = { x = pointed_thing.above.x, y = pointed_thing.above.y + 1, z = pointed_thing.above.z }
-            local bike = minetest.add_entity(pos, "motorbike:"..col, tools.get_plate(placer:get_player_name()))
+            local pname = placer:get_player_name()
+            local sdata = {owner=pname, platenumber=tools.get_plate(pname)}
+            local bike = minetest.add_entity(pos, "motorbike:"..col, minetest.serialize(sdata))
             bike:get_luaentity().angle.y = placer:get_look_horizontal()
             itemstack:take_item(1)
             return itemstack

@@ -28,3 +28,6 @@ motorbike.kick (Punching kicks off the rider) bool true
 
 # Enable custom plates, requires "signs" mod and 'generate_texture' and 'create_lines' be exposed globally
 motorbike.custom_plates (Custom plates) bool true
+
+# Mounted entities can only be used by owners.
+mount_ownable (Ownable mounts) bool false
